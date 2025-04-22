@@ -6,3 +6,7 @@ genid() {
     echo "$id" > "$ID_FILE"
     printf "%05d\n" "$id"
 }
+
+if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
+    genid
+fi
