@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 set -euo pipefail
 
 genid() {
@@ -34,6 +35,6 @@ genid() {
     printf "%05d\n" "$id"
 }
 
-if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
-    genid
-fi
+
+# If someone sources this file, export the function too
+export -f genid
