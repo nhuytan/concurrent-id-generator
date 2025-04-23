@@ -5,8 +5,8 @@ set -euo pipefail
 # genid() — generate a unique, zero‑padded ID
 # ----------------------------
 genid() {
-    local ID_FILE="id_counter.txt"
-    local LOCK_FILE="id_lockfile.lock"
+    local ID_FILE="${ID_FILE:-id_counter.txt}"       # Can be overridden externally
+    local LOCK_FILE="${LOCK_FILE:-id_lockfile.lock}" # Can be overridden externally
     local fd=200
     local width=5
 
@@ -15,6 +15,7 @@ genid() {
         echo "Error: cannot open lock file '$LOCK_FILE'" >&2
         return 1
     }
+
     # Acquire exclusive lock
     flock -x "$fd" || {
         echo "Error: cannot acquire lock on '$LOCK_FILE'" >&2
@@ -22,7 +23,7 @@ genid() {
         return 1
     }
 
-    # Initialize counter if missing
+    # Initialize counter if file doesn't exist or is empty
     [ ! -s "$ID_FILE" ] && echo "0" > "$ID_FILE"
 
     # Read, validate, increment, and write back
@@ -34,9 +35,10 @@ genid() {
         exec {fd}>&-
         return 1
     fi
+
     id=$((id + 1))
     echo "$id" > "$ID_FILE" || {
-        echo "Error: failed to write counter to '$ID_FILE'" >&2
+        echo "Error: failed to write to '$ID_FILE'" >&2
         flock -u "$fd"
         exec {fd}>&-
         return 1
@@ -46,9 +48,14 @@ genid() {
     flock -u "$fd"
     exec {fd}>&-
 
-    # Print zero padded ID
+    # Always print ID (for file)
     printf "%0${width}d\n" "$id"
+
+    # Debug info to stderr (won’t go to output_ids.txt)
+    if [[ "${VERBOSE:-0}" == "1" ]]; then
+        echo "PID $$ → ID $id" >&2
+    fi  
 }
 
-# If someone sources this file, export the function too
+# Export function when sourced
 export -f genid
