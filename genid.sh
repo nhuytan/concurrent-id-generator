@@ -2,15 +2,15 @@
 set -euo pipefail
 
 # ----------------------------
-# genid() — generate a unique, zero‑padded ID
+# genid() — generate a unique, zero padded ID
 # ----------------------------
 genid() {
-    local ID_FILE="${ID_FILE:-id_counter.txt}"       # Can be overridden externally
-    local LOCK_FILE="${LOCK_FILE:-id_lockfile.lock}" # Can be overridden externally
+    local ID_FILE="${ID_FILE:-id_counter.txt}"       
+    local LOCK_FILE="${LOCK_FILE:-id_lockfile.lock}" 
     local fd=200
     local width=5
 
-    # Open (and create) the lockfile on fd 200
+    # Open the lockfile on fd 200
     exec {fd}>"$LOCK_FILE" || {
         echo "Error: cannot open lock file '$LOCK_FILE'" >&2
         return 1
@@ -48,7 +48,7 @@ genid() {
     flock -u "$fd"
     exec {fd}>&-
 
-    # Always print ID (for file)
+    # Print ID 
     printf "%0${width}d\n" "$id"
 
     # Debug info to stderr (won’t go to output_ids.txt)
@@ -57,5 +57,4 @@ genid() {
     fi  
 }
 
-# Export function when sourced
 export -f genid
