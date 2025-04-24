@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
-set +m  # Disable job control for Colab compatibility
+set +m 
 
-# Source the genid function
 source "$(dirname "$0")/genid.sh"
 
 # ----------------------------
