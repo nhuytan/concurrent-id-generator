@@ -30,6 +30,11 @@ Start by cloning the GitHub repository into your Colab environment:
 
 You can run the test script in various modes:
 
+-i number_ids: indicate how many IDs need to be generated.
+-p number_process: indicate how many processes are needed in parallel.
+-v: verbose mode, print PID → ID
+- By default: 1000 IDs, 10 processes
+
 1️. Silent Mode (no console output)
 
 ```bash 
