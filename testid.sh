@@ -27,6 +27,7 @@ testid() {
     while [[ $# -gt 0 ]]; do
         case "$1" in
             -v|--verbose) VERBOSE=1; shift ;;
+            -p|--total-ids) TOTAL_IDS="$2"; shift 2 ;;
             [0-9]*) PARALLEL="$1"; shift ;;
             *) echo "Unknown option: $1"; return 1 ;;
         esac
